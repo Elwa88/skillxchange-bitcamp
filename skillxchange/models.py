@@ -18,6 +18,7 @@ class Skills(models.Model):
     description = models.TextField()
     limit = models.IntegerField(default=10)
     tutor = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    current_students = models.IntegerField(default=0)
 
     def __str__(self):
         return f'{self.title}'
@@ -25,7 +26,6 @@ class Skills(models.Model):
 class Enrollment(models.Model):
     skill = models.ForeignKey(Skills,on_delete=models.CASCADE)
     student = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
-    enrolled = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.student} {self.enrolled} {self.skill}'

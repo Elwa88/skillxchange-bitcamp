@@ -1,7 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated,AllowAny
-from .permissions import CustomPermissions
+from .permissions import SkillsPermissions, OtherPermissions
 from .models import (
     Skills,
     CustomUser,
@@ -18,25 +16,25 @@ from .serializers import (
 class SkillsViewSet(viewsets.ModelViewSet):
     queryset = Skills.objects.all()
     serializer_class = SkillSerializer
-    permission_classes = [CustomPermissions]
+    permission_classes = [SkillsPermissions]
     def perform_create(self, serializer):
         serializer.save(tutor = self.request.user)
 
 class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [OtherPermissions]
     
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [OtherPermissions]
 
 class EnrollmentViewSet(viewsets.ModelViewSet):
     queryset = Enrollment.objects.all()
     serializer_class = EnrollmentSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [OtherPermissions]
     
-    def create(self,serializer):
+    def perform_create(self,serializer):
         serializer.save(student = self.request.user)

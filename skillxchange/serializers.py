@@ -12,13 +12,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = "__all__"
-
-    def create_user(self,data):
-        user = CustomUser(username = data['username'])
-        user.set_password(data['password'])
-        user.save()
-        return user
-    
     
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,3 +23,17 @@ class EnrollmentSerializer(serializers.ModelSerializer):
         model = Enrollment
         fields = "__all__"
         read_only_fields = ['student']
+
+    def validate(self, data):
+        skill = data['skill']
+
+        if skill.current_students >= skill.limit:
+            raise serializers.ValidationError("error in limit")
+        
+        return data
+    
+    def create(self, validated_data):
+        skill = validated_data['skill']
+        skill.current_students += 1
+        skill.save()
+        return super().create(validated_data)
